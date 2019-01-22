@@ -23,7 +23,7 @@ public class SimpleParameter implements ParameterInterface{
 	//costo loss
 	@Override
 	public float getCl() {
-		return 1;
+		return 2;
 	}
 
 }
