@@ -1,84 +1,168 @@
-package forks;
+package utility;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import constants.Errors;
 import constants.ForksConstant;
-import input.InputInterface;
 import input.ParameterInterface;
-import input.SimpleInput;
-import input.SimpleParameter;
 import structures.Node;
 import structures.RootedTree;
+import structures.UnRootedTree;
 
-public class Main {
+public class Methods {
 
-	static RootedTree G;
-	static RootedTree S;
-	static InputInterface input= new SimpleInput();
-	static ParameterInterface parameters= new SimpleParameter();
+	private static  ParameterInterface parameters;
 
-	/**
-	 * @param args
-	 */
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
+	public static int findMiddleIndex(String unrootedG) {
 
-		G= new RootedTree(input.getG(),input.getMapping());
+		String minusOutsideBracket=unrootedG.substring(unrootedG.indexOf("(")+1, unrootedG.lastIndexOf(")"));
 
-		S= new RootedTree(input.getS(),input.getMapping());
+		int i=0;
+		int sum=0;
+		boolean end=false;
 
-		setForks(G.getRoot());
+		//se il sinistro √® una foglia la met√† sar√† la prima virgola
+		if (minusOutsideBracket.charAt(0)!='(') {
+			try {
+				return unrootedG.indexOf(",");
+			} catch (IndexOutOfBoundsException e) {
+				throw new RuntimeException(Errors.UNROOTED_TREE_GENERATOR_ERROR_WRONG_FORMAT_NOT_COMMA_FOUND+": "+unrootedG);
+			}
+		}
 
-		setTops(G.getRoot(),G.getRoot().getFork().getCenter());
+		while (!end) {
+			if (minusOutsideBracket.charAt(i)=='(') {
+				sum++;
+			}
+			if (minusOutsideBracket.charAt(i)==')') {
+				sum--;
+				if (sum==0) {
+					end=true;
+				} else if (sum<0) {
+					throw new RuntimeException(Errors.UNROOTED_TREE_GENERATOR_ERROR_WRONG_FORMAT_BRACKETS+": "+unrootedG);
+				}
+			}
+			i++;
+			if (i>=minusOutsideBracket.length()) {
+				throw new RuntimeException(Errors.UNROOTED_TREE_GENERATOR_ERROR_WRONG_FORMAT_BRACKETS+": "+unrootedG);
+			}
+		}
+		return i+1; //il pi√π 1 √® per il fatto che ho rimosso le parentesi esterne all'inizio
+	}
 
-		/*for (Node node: G.getNodes()) {
-			System.out.println("nodo:  "+node.getLabel());
-			System.out.println("centro:  "+node.getFork().getCenter().getLabel());
-			System.out.println("top:  "+node.getFork().getTop().getLabel());
-			System.out.println("left:  "+node.getFork().getRight().getLabel());
-			System.out.println("right:  "+node.getFork().getLeft().getLabel());
+	public static int findMiddleIndexComma(String unrootedG) {
 
-		}*/
+		String minusOutsideBracket=unrootedG.substring(unrootedG.indexOf("(")+1, unrootedG.lastIndexOf(")"));
 
-		generateMapping();
+		int i=0;
+		int sum=0;
+		boolean end=false;
 
-		/*for (Node node: G.getNodes()) {
-			System.out.println("-----");
-			System.out.println("nodo: "+node.getLabel()+" - punteggio: "+node.getMapping().getBetter());
-			System.out.println("top: "+node.getMapping().getTop_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getTop_fork_map().getCosto());
-			System.out.println("center: "+node.getMapping().getCenter_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getCenter_fork_map().getCosto());
-			System.out.println("left: "+node.getMapping().getLeft_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getLeft_fork_map().getCosto());
-			System.out.println("right: "+node.getMapping().getRight_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getRight_fork_map().getCosto());
-		}*/
+		//se il sinistro √® una foglia la met√† sar√† la prima virgola
+		if (minusOutsideBracket.charAt(0)!='(') {
+			try {
+				return unrootedG.indexOf(",");
+			} catch (IndexOutOfBoundsException e) {
+				throw new RuntimeException(Errors.UNROOTED_TREE_GENERATOR_ERROR_WRONG_FORMAT_NOT_COMMA_FOUND+": "+unrootedG);
+			}
+		}
 
-		System.out.println("OPTIMUM COST: "+G.getRoot().getMapping().getBetter());
-		System.out.println("MAPPING:");
-		printOptimumMap(G.getRoot(),G.getRoot().getMapping().getBestNode());
+		while (!end) {
+			if (minusOutsideBracket.charAt(i)=='(') {
+				sum++;
+			}
+			if (minusOutsideBracket.charAt(i)==')') {
+				sum--;
+				if (sum==0) {
+					end=true;
+				} else if (sum<0) {
+					throw new RuntimeException(Errors.UNROOTED_TREE_GENERATOR_ERROR_WRONG_FORMAT_BRACKETS+": "+unrootedG);
+				}
+			}
+			i++;
+			if (i>=minusOutsideBracket.length()) {
+				throw new RuntimeException(Errors.UNROOTED_TREE_GENERATOR_ERROR_WRONG_FORMAT_BRACKETS+": "+unrootedG);
+			}
+		}
 
+		return i+unrootedG.substring(i).indexOf(","); 
 	}
 
 
-	private static void printOptimumMap(Node node, int code) {
+	public static void  setForks(RootedTree G, RootedTree S) {
+		setForks(G.getRoot(),S);
+	}
 
-		if (!node.isLeaf()) {
-			printOptimumMap(node.getLeft(), node.getMapping().getCodeLeftChildByCode(code)) ;
-			printOptimumMap(node.getRight(), node.getMapping().getCodeRightChildByCode(code)) ;
-			System.out.println(node.getLabel()+" -> "+node.getMapping().getNodeByCode(code).getLabel()+"     dyn$ "+node.getMapping().getCostByCode(code)+"    sing$ "+(node.getMapping().getCostByCode(code)-node.getRight().getMapping().getCostByCode(node.getMapping().getCodeRightChildByCode(code))-node.getLeft().getMapping().getCostByCode(node.getMapping().getCodeLeftChildByCode(code))));
+	public static Node setForks(Node node, RootedTree S) {
+
+		if (node.isLeaf()) {
+			Node Sleaf= S.getNodeByLabel(node.getLabel());
+			node.getFork().setCenter(Sleaf);
+			node.getFork().setRight(Sleaf);
+			node.getFork().setLeft(Sleaf);
+			return node;
+		}
+
+		//il centro Ë il lca dei centri dei figli
+		Node lca=((setForks(node.getRight(),S)).getFork().getCenter()).lca((setForks(node.getLeft(),S)).getFork().getCenter());
+
+		node.getFork().setCenter(lca);
+
+		if (lca.isLeaf()) { // se lca Ë una foglia allora left e right li metto uguali
+			node.getFork().setLeft(lca);
+			node.getFork().setRight(lca);
+		} else { //altrimenti i figli
+			node.getFork().setLeft(node.getFork().getCenter().getLeft());
+			node.getFork().setRight(node.getFork().getCenter().getRight());
+		}
+
+		return node;
+
+	}
+
+	public static void  setTops(RootedTree G) {
+		setTops(G.getRoot(),G.getRoot().getFork().getCenter());
+	}
+
+	public static void setTops(Node node, Node top) {
+
+		node.getFork().setTop(top);
+
+		if (node.isLeaf()) {
+			return;
+		}
+
+		if (node.getFork().getCenter()==node.getLeft().getFork().getCenter()) {
+			setTops(node.getLeft(), top);
 		} else {
-			System.out.println(node.getLabel()+" -> "+node.getLabel());
+			if (node.getLeft().getFork().getCenter().isDescendant(node.getFork().getLeft())) {
+				setTops(node.getLeft(), node.getFork().getLeft());
+			} else {
+				setTops(node.getLeft(), node.getFork().getRight());
+			}
+
 		}
 
 
-
+		if (node.getFork().getCenter()==node.getRight().getFork().getCenter()) {
+			setTops(node.getRight(), top);
+		} else {
+			if (node.getRight().getFork().getCenter().isDescendant(node.getFork().getLeft())) {
+				setTops(node.getRight(), node.getFork().getLeft());
+			} else {
+				setTops(node.getRight(), node.getFork().getRight());
+			}
+		}
 
 
 	}
 
 
-	private static void generateMapping() {
 
+
+	public static void generateMapping(RootedTree G, RootedTree S, ParameterInterface inputParameters) {
+
+		parameters=inputParameters;
 		//inizializzo la matrice dei costi
 		for (Node node: G.getNodes()) {
 
@@ -106,13 +190,13 @@ public class Main {
 		}
 
 		//inizio la programmazione dinamica
-		generateDynamicMapping(G.getRoot());
+		generateDynamicMapping(G.getRoot(),G);
 
 	}
 
 
 
-	private static void generateDynamicMapping(Node node) {
+	private static void generateDynamicMapping(Node node,RootedTree G) {
 
 		//se sono una foglia non devo fare nnt
 		if (node.isLeaf()) {
@@ -120,31 +204,31 @@ public class Main {
 		}
 
 		//postorder per assicurarmi di aver calcolato prima i costi ottimali dei figli
-		generateDynamicMapping(node.getLeft());
-		generateDynamicMapping(node.getRight());
+		generateDynamicMapping(node.getLeft(),G);
+		generateDynamicMapping(node.getRight(),G);
 
 		//se sono un nodo interno calcolo il punteggio migliore di mandare il node nei 4 punti della forketta
 
 		//left
-		setLeftCost(node);
+		setLeftCost(node,G);
 
 		//right
-		setRightCost(node);
+		setRightCost(node,G);
 
 		//center
-		setCenterCost(node);
+		setCenterCost(node,G);
 
 		//top
-		setTopCost(node);
+		setTopCost(node,G);
 
 		//!!! l'ordine center -> top conta!!!//
 		/*int a=0;
-		a++;*/
+	a++;*/
 
 	}
 
 
-	private static void setTopCost(Node node) {
+	private static void setTopCost(Node node,RootedTree G) {
 
 		// se il centro ed il top sono uguali allora il top si deve comportare come il centro
 		if (node.getFork().getTop()==node.getFork().getCenter()) {
@@ -189,7 +273,7 @@ public class Main {
 	}
 
 
-	private static void setCenterCost(Node node) {
+	private static void setCenterCost(Node node,RootedTree G) {
 
 		//costo duplicazione
 		float costoDuplicazione=0;
@@ -400,7 +484,7 @@ public class Main {
 	}
 
 
-	private static void setLeftCost(Node node) {
+	private static void setLeftCost(Node node,RootedTree G) {
 		//costo duplicazione
 		float costoDuplicazione=0;
 		AtomicInteger forkPointDuplicazioneSinistra = new AtomicInteger(0); //setto anche per il mapping
@@ -542,7 +626,7 @@ public class Main {
 	}
 
 
-	private static void setRightCost(Node node) {
+	private static void setRightCost(Node node,RootedTree G) {
 		//costo duplicazione
 		float costoDuplicazione=0;
 		AtomicInteger forkPointDuplicazioneSinistra = new AtomicInteger(0); //setto anche per il mapping
@@ -684,70 +768,131 @@ public class Main {
 		}
 	}
 
+	//setta i costi a tutti gli archi
+	public static void walk(UnRootedTree g) {
 
-	private static void setTops(Node node, Node top) {
+		//assegnamo il peso al primo arco, ovvero secondo il format input, l'arco tra il left della radice
+		//del GFirst e il destro della radice del GFirst
+		g.getFirstG().getRoot().getLeft().setEdgeFatherWeight(g.getFirstG().getRoot().getMapping().getBetter());
 
-		node.getFork().setTop(top);
+		//facciamo partire in post order su GFirst la procedura ricorsiva che assegna i pesi agli archi
+		assignWeights(g.getFirstG(),g.getFirstG().getRoot().getLeft());
 
+
+	}
+
+	//prendo in input l'albero rootato gi‡ con tutte l informazioni ed il nodo il cui arco 
+	//adiacente con il padre Ë stato pesato
+	private static void assignWeights(RootedTree g, Node v) {
+
+		//se v Ë una foglia non devo fare nulla
+		if (v.isLeaf()) {
+			return;
+		}
+
+		//mi salvo i valori che potrebbero cambiare,
+		//mi salvo il figlio di root che non Ë v
+		//e mi salvo se v Ë figlio sinistro o destro di root
+		boolean vIsLeftChildOfOldRoot=v.isLeftChild();
+		Node oldRootSonNotV=v.getSibling();
+
+		Node oldVLeft= v.getLeft();
+		Node oldVRight= v.getRight();
+
+		//faccio finta di radicare in v_1 - left
+
+		//aggiorno la nuova radice, qui Ë arbitrario l'ordine
+		g.getRoot().setLeft(v.getLeft());
+		g.getRoot().setRight(v);
+
+		//aggiorno v
+		v.setLeft(oldRootSonNotV);
+
+
+		//ora che ho aggiornato sia root che v, devo ricalcolare il costo
+		//di v ed R
+		generateDynamicMappingNonRecursive(v,g);
+		generateDynamicMappingNonRecursive(g.getRoot(),g);
+
+		//ora che ho ricalcolato il costo assegno il peso all'arco (v,v.left) 
+		oldVLeft.setEdgeFatherWeight(g.getRoot().getMapping().getBetter());
+
+		//adesso faccio ricorsione sui figli di v.left (old)  
+		//e ipotizzo che alla fine della ricorsione il grafo g Ë come lo ho lasciato
+		assignWeights(g,oldVLeft);
+
+		//ora devo radicare in v.right, ma per farlo ritorno alla configurazione originaria
+		//reset r
+		if (vIsLeftChildOfOldRoot) {
+			g.getRoot().setLeft(v);
+			g.getRoot().setRight(oldRootSonNotV);
+		} else {
+			g.getRoot().setLeft(oldRootSonNotV);
+			g.getRoot().setRight(v);
+		}
+
+
+		//reset v
+		v.setLeft(oldVLeft);
+
+		//radico ora in v.right, quindi aggiorno la radice
+		g.getRoot().setLeft(v);
+		g.getRoot().setRight(v.getRight());
+
+		//aggiorno v
+		v.setRight(oldRootSonNotV);
+
+
+		//ora che ho aggiornato sia root che v, devo ricalcolare il costo
+		//di v ed R
+		generateDynamicMappingNonRecursive(v,g);
+		generateDynamicMappingNonRecursive(g.getRoot(),g);
+
+		//ora che ho ricalcolato il costo assegno il peso all'arco (v,v.right) 
+		oldVRight.setEdgeFatherWeight(g.getRoot().getMapping().getBetter());
+
+		//adesso faccio ricorsione sui figli di v.right (old) 
+		//e ipotizzo che che alla fine della ricorsione il grafo g Ë come lo ho lasciato
+		assignWeights(g,oldVRight);
+
+		//avrei finito, ma per poter usufruire dell'ipotesi che g Ë sempre come lo ho lasciato, 
+		//lo riporto allo stato originale
+		//reset root
+		if (vIsLeftChildOfOldRoot) {
+			g.getRoot().setLeft(v);
+			g.getRoot().setRight(oldRootSonNotV);
+		} else {
+			g.getRoot().setLeft(oldRootSonNotV);
+			g.getRoot().setRight(v);
+		}
+		//reset v
+		v.setRight(oldVRight);
+
+	}
+
+
+	private static void generateDynamicMappingNonRecursive(Node node,RootedTree G) {
+
+		//se sono una foglia non devo fare nnt
 		if (node.isLeaf()) {
 			return;
 		}
 
-		if (node.getFork().getCenter()==node.getLeft().getFork().getCenter()) {
-			setTops(node.getLeft(), top);
-		} else {
-			if (node.getLeft().getFork().getCenter().isDescendant(node.getFork().getLeft())) {
-				setTops(node.getLeft(), node.getFork().getLeft());
-			} else {
-				setTops(node.getLeft(), node.getFork().getRight());
-			}
+		//se sono un nodo interno calcolo il punteggio migliore di mandare il node nei 4 punti della forketta
 
-		}
+		//left
+		setLeftCost(node,G);
 
+		//right
+		setRightCost(node,G);
 
-		if (node.getFork().getCenter()==node.getRight().getFork().getCenter()) {
-			setTops(node.getRight(), top);
-		} else {
-			if (node.getRight().getFork().getCenter().isDescendant(node.getFork().getLeft())) {
-				setTops(node.getRight(), node.getFork().getLeft());
-			} else {
-				setTops(node.getRight(), node.getFork().getRight());
-			}
-		}
+		//center
+		setCenterCost(node,G);
 
+		//top
+		setTopCost(node,G);
 
 	}
 
-	private static Node setForks(Node node) {
-
-
-
-		if (node.isLeaf()) {
-			Node Sleaf= S.getNodeByLabel(node.getLabel());
-			node.getFork().setCenter(Sleaf);
-			node.getFork().setRight(Sleaf);
-			node.getFork().setLeft(Sleaf);
-			return node;
-		}
-
-		//il centro Ë il lca dei centri dei figli
-		Node lca=((setForks(node.getRight())).getFork().getCenter()).lca((setForks(node.getLeft())).getFork().getCenter());
-
-		node.getFork().setCenter(lca);
-
-		if (lca.isLeaf()) { // se lca Ë una foglia allora left e right li metto uguali
-			node.getFork().setLeft(lca);
-			node.getFork().setRight(lca);
-		} else { //altrimenti i figli
-			node.getFork().setLeft(node.getFork().getCenter().getLeft());
-			node.getFork().setRight(node.getFork().getCenter().getRight());
-		}
-
-		return node;
-
-	}
 
 }
-
-
-

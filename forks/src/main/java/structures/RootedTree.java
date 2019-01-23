@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import constants.Errors;
-import methods.Methods;
+import utility.Methods;
 
 
 public class RootedTree {

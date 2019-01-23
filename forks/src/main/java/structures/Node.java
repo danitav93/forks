@@ -22,6 +22,8 @@ public class Node {
 	
 	private Mapping mapping;
 	
+	private float edgeFatherWeight;//per il grafo indiretto
+	
 	public Node getParent() {
 		return parent;
 	}
@@ -196,6 +198,14 @@ public class Node {
 
 	public void setMapping(Mapping mapping) {
 		this.mapping = mapping;
+	}
+
+	public float getEdgeFatherWeight() {
+		return edgeFatherWeight;
+	}
+
+	public void setEdgeFatherWeight(float edgeFatherWeight) {
+		this.edgeFatherWeight = edgeFatherWeight;
 	}
 
 	
