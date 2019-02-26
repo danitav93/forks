@@ -44,19 +44,33 @@ public class MainRooted {
 
 		generateMapping();
 
-		/*for (Node node: G.getNodes()) {
+		for (Node node: G.getNodes()) {
 			System.out.println("-----");
 			System.out.println("nodo: "+node.getLabel()+" - punteggio: "+node.getMapping().getBetter());
 			System.out.println("top: "+node.getMapping().getTop_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getTop_fork_map().getCosto());
 			System.out.println("center: "+node.getMapping().getCenter_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getCenter_fork_map().getCosto());
 			System.out.println("left: "+node.getMapping().getLeft_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getLeft_fork_map().getCosto());
 			System.out.println("right: "+node.getMapping().getRight_fork_map().getNodo().getLabel()+" - punteggio: "+node.getMapping().getRight_fork_map().getCosto());
-		}*/
+		}
 
 		System.out.println("OPTIMUM COST: "+G.getRoot().getMapping().getBetter());
 		System.out.println("MAPPING:");
 		printOptimumMap(G.getRoot(),G.getRoot().getMapping().getBestNode());
+		
+		printTreeIsSeparate();
 
+	}
+
+
+	private static void printTreeIsSeparate() {
+
+		for (Node node : G.getNodes()) {
+			if ((!node.isLeaf()) && (node.getFork().getCenter()==node.getLeft().getFork().getCenter() || node.getFork().getCenter()==node.getRight().getFork().getCenter())) {
+				System.out.println("Non è saparato");
+				return;
+			}
+		}
+		System.out.println("è saparato");
 	}
 
 

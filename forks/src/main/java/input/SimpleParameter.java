@@ -17,7 +17,7 @@ public class SimpleParameter implements ParameterInterface{
 	//costo transfer
 	@Override
 	public float getCt() {
-		return 1;
+		return 3f;
 	}
 
 	//costo loss

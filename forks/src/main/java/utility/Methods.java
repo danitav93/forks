@@ -160,7 +160,7 @@ public class Methods {
 
 
 
-	public static void generateMapping(RootedTree G, RootedTree S, ParameterInterface inputParameters) {
+	public static void generateMapping(RootedTree G, ParameterInterface inputParameters) {
 
 		parameters=inputParameters;
 		//inizializzo la matrice dei costi
@@ -769,21 +769,21 @@ public class Methods {
 	}
 
 	//setta i costi a tutti gli archi
-	public static void walk(UnRootedTree g) {
+	public static void walk(UnRootedTree g,RootedTree S) {
 
 		//assegnamo il peso al primo arco, ovvero secondo il format input, l'arco tra il left della radice
 		//del GFirst e il destro della radice del GFirst
 		g.getFirstG().getRoot().getLeft().setEdgeFatherWeight(g.getFirstG().getRoot().getMapping().getBetter());
 
 		//facciamo partire in post order su GFirst la procedura ricorsiva che assegna i pesi agli archi
-		assignWeights(g.getFirstG(),g.getFirstG().getRoot().getLeft());
+		assignWeights(g.getFirstG(),g.getFirstG().getRoot().getLeft(),S);
 
 
 	}
 
 	//prendo in input l'albero rootato già con tutte l informazioni ed il nodo il cui arco 
 	//adiacente con il padre è stato pesato
-	private static void assignWeights(RootedTree g, Node v) {
+	private static void assignWeights(RootedTree g, Node v, RootedTree S) {
 
 		//se v è una foglia non devo fare nulla
 		if (v.isLeaf()) {
@@ -807,19 +807,28 @@ public class Methods {
 
 		//aggiorno v
 		v.setLeft(oldRootSonNotV);
+		
+		//aggiorno il padre di left.v
+		oldVLeft.setParent(g.getRoot());
 
+		//aggiorno le forchette di v e poi r
+		//updateSingleFork(v);
+		//updateSingleFork(g.getRoot());
+		setForks(g, S);
+		
+		//aggiorno i tops di v ed r (ATTENZIONE NON LINEARE!!!!!!!!!!!!) 
+		setTops(g);
 
 		//ora che ho aggiornato sia root che v, devo ricalcolare il costo
-		//di v ed R
-		generateDynamicMappingNonRecursive(v,g);
-		generateDynamicMappingNonRecursive(g.getRoot(),g);
+		generateMapping(g, parameters);
+
 
 		//ora che ho ricalcolato il costo assegno il peso all'arco (v,v.left) 
 		oldVLeft.setEdgeFatherWeight(g.getRoot().getMapping().getBetter());
 
 		//adesso faccio ricorsione sui figli di v.left (old)  
 		//e ipotizzo che alla fine della ricorsione il grafo g è come lo ho lasciato
-		assignWeights(g,oldVLeft);
+		assignWeights(g,oldVLeft,S);
 
 		//ora devo radicare in v.right, ma per farlo ritorno alla configurazione originaria
 		//reset r
@@ -834,6 +843,9 @@ public class Methods {
 
 		//reset v
 		v.setLeft(oldVLeft);
+		
+		//reset left.v
+		oldVLeft.setParent(v);
 
 		//radico ora in v.right, quindi aggiorno la radice
 		g.getRoot().setLeft(v);
@@ -842,18 +854,27 @@ public class Methods {
 		//aggiorno v
 		v.setRight(oldRootSonNotV);
 
+		//aggiorno il padre di right.v
+		oldVRight.setParent(g.getRoot());
+		
+		//aggiorno le forchette di v e poi r
+		//updateSingleFork(v);
+		//updateSingleFork(g.getRoot());
+		setForks(g, S);
+		
+		//aggiorno i tops di v ed r (ATTENZIONE NON LINEARE!!!!!!!!!!!!) 
+		setTops(g);
 
 		//ora che ho aggiornato sia root che v, devo ricalcolare il costo
 		//di v ed R
-		generateDynamicMappingNonRecursive(v,g);
-		generateDynamicMappingNonRecursive(g.getRoot(),g);
+		generateMapping(g, parameters);
 
 		//ora che ho ricalcolato il costo assegno il peso all'arco (v,v.right) 
 		oldVRight.setEdgeFatherWeight(g.getRoot().getMapping().getBetter());
 
 		//adesso faccio ricorsione sui figli di v.right (old) 
 		//e ipotizzo che che alla fine della ricorsione il grafo g è come lo ho lasciato
-		assignWeights(g,oldVRight);
+		assignWeights(g,oldVRight,S);
 
 		//avrei finito, ma per poter usufruire dell'ipotesi che g è sempre come lo ho lasciato, 
 		//lo riporto allo stato originale
@@ -867,9 +888,34 @@ public class Methods {
 		}
 		//reset v
 		v.setRight(oldVRight);
+		
+		//reset left.v
+		oldVRight.setParent(v);
 
 	}
 
+
+	private static void updateSingleFork(Node node) {
+		if (node.isLeaf()) {
+			return;
+		}
+
+		//il centro è il lca dei centri dei figli
+		Node lca=(node.getLeft().getFork().getCenter()).lca(node.getRight().getFork().getCenter());
+
+		node.getFork().setCenter(lca);
+
+		if (lca.isLeaf()) { // se lca è una foglia allora left e right li metto uguali
+			node.getFork().setLeft(lca);
+			node.getFork().setRight(lca);
+		} else { //altrimenti i figli
+			node.getFork().setLeft(node.getFork().getCenter().getLeft());
+			node.getFork().setRight(node.getFork().getCenter().getRight());
+		}
+
+		return ;
+
+	}
 
 	private static void generateDynamicMappingNonRecursive(Node node,RootedTree G) {
 

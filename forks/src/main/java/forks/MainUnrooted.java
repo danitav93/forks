@@ -31,9 +31,9 @@ public class MainUnrooted {
 
 		Methods.setTops(GFirst);
 		
-		Methods.generateMapping(GFirst, S, parameters);
+		Methods.generateMapping(GFirst, parameters);
 				
-		Methods.walk(G);
+		Methods.walk(G,S);
 		
 		output.printUnrooted(G);
 		
