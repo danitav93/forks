@@ -389,7 +389,7 @@ public class SimpleInput implements InputInterface{
 		//return "((((((((a7,b2)!P7,a6)!P6,a5)!P5,(((((((b3,a14)!P14,a13)!P13,a12)!P12,(((b4,a17)!P17,a16)!P16,a15)!P15)!P11,a10)!P10,a9)!P9,a8)!P8)!P4,a3)!P3,a2)!P2,a1)!P1,b1)!P0";
 		
 		//2 plateaus 0 1 2 3 
-		//return "(((((b1,a1)!P1,a2)!P2,a3)!P3,a4)!P4,b4)!P0";
+		return "(((((b1,a1)!P1,a2)!P2,a3)!P3,a4)!P4,b4)!P0";
 		
 		//3 plateaus 0 1 2 3
 		//return "((((((((a6,b6)!P6,a5)!P5,a4)!P4,(((a10,b10)!P10,a9)!P9,a8)!P8)!P7,a3)!P3,a2)!P2,a1)!P1,b4)!P0";
@@ -401,7 +401,7 @@ public class SimpleInput implements InputInterface{
 		//return "((((((((a6,b6)!P6,a5)!P5,a4)!P4,((((a14,b14)!P14,a13)!P13,a12)!P12,((((a10,b10)!P10,a9)!P9,a8)!P8,(((a18,b18)!P18,a17)!P17,a16)!P16)!P15)!P11)!P7,a3)!P3,a2)!P2,a1)!P1,b4)!P0";
 
 		//6 plateaus 0 1 2 3
-		return "((((((((a6,b6)!P6,a5)!P5,a4)!P4,((((a14,b14)!P14,a13)!P13,a12)!P12,((((a10,b10)!P10,a9)!P9,a8)!P8,((((a22,b22)!P22,a21)!P21,a20)!P20,(((a18,b18)!P18,a17)!P17,a16)!P16)!P19)!P15)!P11)!P7,a3)!P3,a2)!P2,a1)!P1,b4)!P0";
+		//return "((((((((a6,b6)!P6,a5)!P5,a4)!P4,((((a14,b14)!P14,a13)!P13,a12)!P12,((((a10,b10)!P10,a9)!P9,a8)!P8,((((a22,b22)!P22,a21)!P21,a20)!P20,(((a18,b18)!P18,a17)!P17,a16)!P16)!P19)!P15)!P11)!P7,a3)!P3,a2)!P2,a1)!P1,b4)!P0";
 
 		
 	}

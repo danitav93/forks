@@ -13,12 +13,22 @@ public class RootedTree {
 	private List<Node> nodes= new ArrayList<>();
 	private Node root;
 	private HashMap<String,String> labelMapping;
+	private HashMap<String,String> mappingDescription;
 
 	
+	public HashMap<String, String> getMappingDescription() {
+		return mappingDescription;
+	}
+	
+	public RootedTree() {
+	}
+
 	public RootedTree(String inputFormat, HashMap<String,String> labelMapping) {
 		this.labelMapping=labelMapping;
+		this.mappingDescription=labelMapping;
 		initializeNodes(inputFormat,null);
 	}
+	
 	
    private Node initializeNodes(String rooted, Node parent) {
 		
@@ -91,6 +101,17 @@ public class RootedTree {
 	public void setRoot(Node root) {
 		this.root = root;
 	}
+
+	public String getDescription(Node n) {
+		
+		
+		if (n.isLeaf()) {
+			return n.getLabel();
+		}
+		
+		return "("+getDescription(n.getLeft())+","+getDescription(n.getRight())+")"+n.getLabel();
+	}
+	
 	
 	
 	
