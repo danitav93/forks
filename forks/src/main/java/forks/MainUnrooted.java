@@ -1,9 +1,11 @@
 package forks;
 
+import java.util.Scanner;
+
 import input.InputInterface;
 import input.ParameterInterface;
-import input.SimpleInput;
 import input.SimpleParameter;
+import input.nPlateausInput;
 import output.OutputInterface;
 import output.SimpleOutput;
 import structures.RootedTree;
@@ -14,12 +16,25 @@ public class MainUnrooted {
 	
 	static RootedTree G;
 	static RootedTree S;
-	static InputInterface input= new SimpleInput();
+	//static InputInterface input= new SimpleInput();
+	static InputInterface input;
 	static OutputInterface output= new SimpleOutput();
 
 	static ParameterInterface parameters= new SimpleParameter();
 	
 	public static void main(String[] args) {
+		
+		System.out.println("Numero di plateaus: ");
+		
+		Scanner sc = new Scanner(System.in);
+		
+		int n = sc.nextInt();
+		
+		sc.close();
+		
+		long startTime = System.currentTimeMillis();
+		
+		input = new nPlateausInput(n);
 
 		UnRootedTree G= new UnRootedTree(input.getUnrootedG(),input.getMapping());
 
@@ -36,6 +51,10 @@ public class MainUnrooted {
 		Methods.walk(G,S);
 		
 		output.printUnrooted(G);
+		
+		long stopTime = System.currentTimeMillis();
+	    long elapsedTime = stopTime - startTime;
+	    System.out.println("tempo di esecuzione: "+elapsedTime/1000+"s");
 		
 		
 	}

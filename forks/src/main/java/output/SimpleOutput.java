@@ -12,9 +12,11 @@ public class SimpleOutput implements OutputInterface{
 		
 		float minimum= findMinimumCost(G.getFirstG().getRoot().getLeft());
 		
+		System.out.println("Costo ottimo: "+minimum);
+		
 		System.out.println("Numero di plateau: "+getNumberOfPlateaus(G.getFirstG().getRoot().getLeft(),minimum));
 		
-		printWeight(G.getFirstG().getRoot().getLeft(),G.getFirstG());
+		//printWeight(G.getFirstG().getRoot().getLeft(),G.getFirstG());
 		
 	}
 

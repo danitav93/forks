@@ -406,11 +406,7 @@ public class SimpleInput implements InputInterface{
 		
 	}
 	
-	@Override
-	public boolean hasNext() {
-		
-		return false;
-	}
+
 
 	
 }

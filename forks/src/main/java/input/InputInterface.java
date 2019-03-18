@@ -8,7 +8,6 @@ public interface InputInterface {
 	String getG();
 	String getUnrootedG();
 	HashMap<String,String> getMapping();
-	boolean hasNext();
 	
 
 	
