@@ -43,6 +43,7 @@ public class nPlateausInput implements InputInterface {
 			gadgetCount++;
 			String toReturn="(((((";
 			toReturn=toReturn+recursion(nbrOfPlateaus-2);
+			gadgetCount++;
 			toReturn=toReturn+","+getNextGadget()+")!P4,a3)!P3,a2)!P2,a1)!P1,b1)!P0";
 			return toReturn;
 		}

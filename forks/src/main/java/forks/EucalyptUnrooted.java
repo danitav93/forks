@@ -6,6 +6,7 @@ import java.util.Scanner;
 import eucalypt.EucalyptService;
 import input.InputInterface;
 import input.nPlateausInput;
+import output.GraphOutput;
 import output.OutputInterface;
 import output.SimpleOutput;
 import structures.Node;
@@ -18,7 +19,8 @@ public class EucalyptUnrooted {
 	//static InputInterface input= new SimpleInput();
 	static InputInterface input;
 
-	static OutputInterface output= new SimpleOutput();
+	//static OutputInterface output= new SimpleOutput();
+	static OutputInterface output= new GraphOutput();
 
 	static UnRootedTree G;
 

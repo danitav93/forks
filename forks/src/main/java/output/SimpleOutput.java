@@ -49,7 +49,7 @@ public class SimpleOutput implements OutputInterface{
 		return fromBottom+currentContribute;
 	}
 
-	private float findMinimumCost(Node v) {
+	public static float findMinimumCost(Node v) {
 		if (v.isLeaf()) {
 			return v.getEdgeFatherWeight();
 		}

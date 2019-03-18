@@ -6,8 +6,8 @@ import input.InputInterface;
 import input.ParameterInterface;
 import input.SimpleParameter;
 import input.nPlateausInput;
+import output.GraphOutput;
 import output.OutputInterface;
-import output.SimpleOutput;
 import structures.RootedTree;
 import structures.UnRootedTree;
 import utility.Methods;
@@ -18,7 +18,8 @@ public class MainUnrooted {
 	static RootedTree S;
 	//static InputInterface input= new SimpleInput();
 	static InputInterface input;
-	static OutputInterface output= new SimpleOutput();
+	//static OutputInterface output= new SimpleOutput();
+	static OutputInterface output= new GraphOutput();
 
 	static ParameterInterface parameters= new SimpleParameter();
 	
